@@ -1,0 +1,48 @@
+---
+// src/layouts/BaseLayout.astro
+interface Props {
+	title: string;
+}
+const { title } = Astro.props;
+---
+
+<html lang="id">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<title>{title}</title>
+		<style is:global>
+			:root {
+				--bg-color: #f9fafb;
+				--card-bg: #ffffff;
+				--text-color: #1f2937;
+				--primary: #f48120;
+				--primary-hover: #e06b0d;
+				--border: #e5e7eb;
+			}
+			body {
+				font-family: system-ui, -apple-system, sans-serif;
+				background-color: var(--bg-color);
+				color: var(--text-color);
+				margin: 0;
+				padding: 2rem 1rem;
+				display: flex;
+				justify-content: center;
+			}
+			.container {
+				width: 100%;
+				max-width: 650px;
+				background: var(--card-bg);
+				padding: 2rem;
+				border-radius: 12px;
+				box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<slot /> <!-- Tempat konten utama akan disisipkan -->
+		</div>
+	</body>
+</html>

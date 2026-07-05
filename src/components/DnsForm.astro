@@ -1,0 +1,83 @@
+---
+// src/components/DnsForm.astro
+---
+
+<form id="dnsForm">
+	<div class="form-group">
+		<label for="domain">Nama Domain Utama</label>
+		<input type="text" id="domain" placeholder="contoh.com" required />
+	</div>
+	
+	<div class="form-group">
+		<label for="ipv4">IP Address Server (IPv4)</label>
+		<input type="text" id="ipv4" placeholder="192.0.2.1" required />
+	</div>
+
+	<div class="checkbox-group">
+		<label class="checkbox-label">
+			<input type="checkbox" id="proxyDefault" checked />
+			Aktifkan Cloudflare Proxy (Orange Cloud) untuk web utama & www
+		</label>
+		<label class="checkbox-label">
+			<input type="checkbox" id="includeMail" />
+			Sertakan Konfigurasi Standard Mail (MX & SPF Record)
+		</label>
+	</div>
+	
+	<button type="submit">Generate & Download .txt File</button>
+</form>
+
+<style>
+	.form-group { margin-bottom: 1.25rem; }
+	label { display: block; font-weight: 600; margin-bottom: 0.5rem; font-size: 0.9rem; }
+	input[type="text"] {
+		width: 100%; padding: 0.75rem; border: 1px solid var(--border);
+		border-radius: 6px; box-sizing: border-box; font-size: 1rem;
+	}
+	input[type="text"]:focus { outline: none; border-color: var(--primary); }
+	.checkbox-group {
+		display: flex; flex-direction: column; gap: 0.75rem;
+		margin: 1.5rem 0; padding: 1rem; background: #f3f4f6; border-radius: 8px;
+	}
+	.checkbox-label { display: flex; align-items: center; gap: 0.5rem; font-weight: normal; cursor: pointer; }
+	button {
+		width: 100%; background-color: var(--primary); color: white; border: none;
+		padding: 0.75rem; font-size: 1rem; font-weight: 600; border-radius: 6px; cursor: pointer;
+	}
+	button:hover { background-color: var(--primary-hover); }
+</style>
+
+<script>
+	const form = document.getElementById('dnsForm') as HTMLFormElement;
+
+	form?.addEventListener('submit', (e) => {
+		e.preventDefault();
+
+		const domain = (document.getElementById('domain') as HTMLInputElement).value.trim().toLowerCase();
+		const ipv4 = (document.getElementById('ipv4') as HTMLInputElement).value.trim();
+		const isProxied = (document.getElementById('proxyDefault') as HTMLInputElement).checked;
+		const includeMail = (document.getElementById('includeMail') as HTMLInputElement).checked;
+
+		const proxyTag = isProxied ? ';cf_proxy=true' : ';cf_proxy=false';
+
+		// Generate file content
+		let zoneFileContent = `; Zone file generated locally for Cloudflare Import\n$ORIGIN ${domain}.\n$TTL 3600\n\n`;
+		zoneFileContent += `; --- Core Web Records ---\n@   IN  A   ${ipv4} ${proxyTag}\nwww IN  A   ${ipv4} ${proxyTag}\n\n`;
+		zoneFileContent += `; --- System Records (DNS Only) ---\nssh IN  A   ${ipv4} ;cf_proxy=false\nftp IN  A   ${ipv4} ;cf_proxy=false\n\n`;
+
+		if (includeMail) {
+			zoneFileContent += `; --- Mail Configuration ---\n@   IN  MX  10 mail.${domain}.\nmail IN A   ${ipv4} ;cf_proxy=false\n@   IN  TXT "v=spf1 ip4:${ipv4} ~all"\n\n`;
+		}
+
+		// Trigger Download
+		const blob = new Blob([zoneFileContent], { type: 'text/plain;charset=utf-8' });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = `${domain}-cloudflare-dns.txt`;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		URL.revokeObjectURL(url);
+	});
+</script>
