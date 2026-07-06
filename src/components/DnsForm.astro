@@ -3,362 +3,454 @@
 ---
 
 <div class="grid-container">
-	<div class="form-section">
-		<form id="dnsForm">
-			<div class="form-group">
-				<label for="domain">Nama Domain Utama</label>
-				<input type="text" id="domain" placeholder="contoh.com" required />
-				<span class="error-msg" id="domainError"></span>
-			</div>
-			
-			<div class="form-group">
-				<label for="ipv4">IP Address Server (IPv4)</label>
-				<input type="text" id="ipv4" placeholder="192.0.2.1" required />
-				<span class="error-msg" id="ipv4Error"></span>
-			</div>
+    <div class="form-section">
+        <form id="dnsForm">
+            <div class="form-group">
+                <label for="domain">Nama Domain Utama</label>
+                <input
+                    type="text"
+                    id="domain"
+                    placeholder="contoh.com"
+                    required
+                />
+                <span class="error-msg" id="domainError"></span>
+            </div>
 
-			<div class="form-group">
-				<label for="ipv6">IP Address Server (IPv6 - Opsional)</label>
-				<input type="text" id="ipv6" placeholder="2001:db8::1" />
-			</div>
+            <div class="form-group">
+                <label for="ipv4">IP Address Server (IPv4)</label>
+                <input type="text" id="ipv4" placeholder="192.0.2.1" required />
+                <span class="error-msg" id="ipv4Error"></span>
+            </div>
 
-			<div class="form-group">
-				<label for="mailType">Layanan Email (MX & SPF)</label>
-				<select id="mailType">
-					<option value="none">Tanpa Konfigurasi Email</option>
-					<option value="local">Server Sendiri (Lokal)</option>
-					<option value="google">Google Workspace</option>
-					<option value="m365">Microsoft 365</option>
-					<option value="mailgun">Mailgun</option>
-				</select>
-			</div>
+            <div class="form-group">
+                <label for="ipv6">IP Address Server (IPv6 - Opsional)</label>
+                <input type="text" id="ipv6" placeholder="2001:db8::1" />
+            </div>
 
-			<div class="security-box">
-				<label class="checkbox-label font-bold">
-					<input type="checkbox" id="enableSecurity" />
-					Aktifkan Email Security (DKIM & DMARC)
-				</label>
-				
-				<div id="securityFields" class="hidden-fields">
-					<div class="form-group mt-2">
-						<label for="dkimSelector">DKIM Selector</label>
-						<input type="text" id="dkimSelector" placeholder="google atau default" />
-					</div>
-					<div class="form-group">
-						<label for="dkimValue">DKIM TXT Value (p=...)</label>
-						<input type="text" id="dkimValue" placeholder="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgK..." />
-					</div>
-					<label class="checkbox-label">
-						<input type="checkbox" id="enableDmarc" checked />
-						Generate DMARC Standard (Mencegah Spoofing)
-					</label>
-				</div>
-			</div>
+            <div class="form-group">
+                <label for="mailType">Layanan Email (MX & SPF)</label>
+                <select id="mailType">
+                    <option value="none">Tanpa Konfigurasi Email</option>
+                    <option value="local">Server Sendiri (Lokal)</option>
+                    <option value="google">Google Workspace</option>
+                    <option value="m365">Microsoft 365</option>
+                    <option value="mailgun">Mailgun</option>
+                </select>
+            </div>
 
-			<div class="checkbox-group">
-				<label class="checkbox-label">
-					<input type="checkbox" id="proxyDefault" checked />
-					Aktifkan Cloudflare Proxy (Orange Cloud) untuk @ & www
-				</label>
-			</div>
-			
-			<button type="submit">Download BIND Zone File (.txt)</button>
-		</form>
-	</div>
+            <div class="security-box">
+                <label class="checkbox-label font-bold">
+                    <input type="checkbox" id="enableSecurity" />
+                    Aktifkan Email Security (DKIM & DMARC)
+                </label>
 
-	<div class="preview-section">
-		<label>Live Zone File Preview</label>
-		<pre><code id="livePreview">; Masukkan domain & IP untuk melihat pratinjau...</code></pre>
-	</div>
+                <div id="securityFields" class="hidden-fields">
+                    <div class="form-group mt-2">
+                        <label for="dkimSelector">DKIM Selector</label>
+                        <input
+                            type="text"
+                            id="dkimSelector"
+                            placeholder="google atau default"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label for="dkimValue">DKIM TXT Value (p=...)</label>
+                        <input
+                            type="text"
+                            id="dkimValue"
+                            placeholder="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgK..."
+                        />
+                    </div>
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="enableDmarc" checked />
+                        Generate DMARC Standard (Mencegah Spoofing)
+                    </label>
+                </div>
+            </div>
+
+            <div class="checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="proxyDefault" checked />
+                    Aktifkan Cloudflare Proxy (Orange Cloud) untuk @ & www
+                </label>
+            </div>
+
+            <button type="submit">Download BIND Zone File (.txt)</button>
+        </form>
+    </div>
+
+    <div class="preview-section">
+        <label>Live Zone File Preview</label>
+        <pre><code id="livePreview">; Masukkan domain & IP untuk melihat pratinjau...</code></pre>
+    </div>
 </div>
 
 <style>
-	.grid-container {
-		display: grid;
-		grid-template-columns: minmax(0, 1fr); /* Mencegah kolom grid melampaui layar mobile */
-		gap: 1.5rem;
-		width: 100%;
-		box-sizing: border-box;
-	}
-	
-	@media (min-width: 768px) {
-		.grid-container { 
-			grid-template-columns: 1fr 1fr; 
-			max-width: 1200px; 
-			margin: 0 auto;
-		}
-		/* Memastikan kontainer layout utama Astro melebar di desktop */
-		:global(.container) { 
-			max-width: 1200px !important; 
-			width: 90vw !important;
-		}
-	}
-	
-	.form-section, .preview-section {
-		width: 100%;
-		min-width: 0; /* Menghindari isu flex/grid item overflow bawaan browser */
-		box-sizing: border-box;
-	}
-	
-	.form-group { 
-		margin-bottom: 1.25rem; 
-		width: 100%;
-		box-sizing: border-box;
-	}
-	
-	.mt-2 { margin-top: 0.5rem; }
-	.font-bold { font-weight: 600; }
-	
-	label { 
-		display: block; 
-		font-weight: 600; 
-		margin-bottom: 0.5rem; 
-		font-size: 0.9rem; 
-	}
-	
-	input[type="text"], select {
-		width: 100%; 
-		padding: 0.75rem; 
-		border: 1px solid var(--border);
-		border-radius: 6px; 
-		box-sizing: border-box; /* Memastikan padding tidak menambah lebar elemen */
-		font-size: 0.95rem; 
-		background-color: #fff;
-	}
-	
-	input[type="text"]:focus, select:focus { 
-		outline: none; 
-		border-color: var(--primary); 
-	}
-	
-	.error-msg { 
-		color: #dc2626; 
-		font-size: 0.8rem; 
-		margin-top: 0.25rem; 
-		display: block; 
-	}
-	
-	.checkbox-group, .security-box {
-		margin: 1.5rem 0; 
-		padding: 1rem; 
-		background: #f3f4f6; 
-		border-radius: 8px;
-		box-sizing: border-box;
-		width: 100%;
-	}
-	
-	.hidden-fields { 
-		display: none; 
-		margin-top: 1rem; 
-		border-top: 1px solid #d1d5db; 
-		padding-top: 1rem; 
-	}
-	
-	.checkbox-label { 
-		display: flex; 
-		align-items: flex-start; /* Menggunakan flex-start agar teks panjang di mobile rapi */
-		gap: 0.5rem; 
-		font-weight: normal; 
-		cursor: pointer;
-		font-size: 0.9rem;
-		line-height: 1.4;
-	}
-	
-	.checkbox-label input[type="checkbox"] {
-		margin-top: 0.2rem; /* Menyelaraskan checkbox dengan baris pertama teks panjang */
-		flex-shrink: 0; /* Mencegah checkbox mengecil di layar mobile */
-	}
-	
-	button {
-		width: 100%; 
-		background-color: var(--primary); 
-		color: white; 
-		border: none;
-		padding: 0.75rem; 
-		font-size: 1rem; 
-		font-weight: 600; 
-		border-radius: 6px; 
-		cursor: pointer;
-		box-sizing: border-box;
-	}
-	
-	button:hover { 
-		background-color: var(--primary-hover); 
-	}
+    .grid-container {
+        display: grid;
+        grid-template-columns: minmax(
+            0,
+            1fr
+        ); /* Mencegah kolom grid melampaui layar mobile */
+        gap: 1.5rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
 
-	/* Preview Section Responsive Customization */
-	.preview-section { 
-		display: flex; 
-		flex-direction: column; 
-		width: 100%;
-	}
-	
-	pre {
-		background: #1e1e24; 
-		color: #a8ffb2; 
-		padding: 1rem; 
-		border-radius: 8px;
-		overflow-x: auto; 
-		font-family: 'Courier New', Courier, monospace; 
-		font-size: 0.85rem;
-		box-sizing: border-box;
-		width: 100%;
-		max-height: 450px; 
-		margin: 0;
-	}
+    @media (min-width: 768px) {
+        .grid-container {
+            grid-template-columns: 1fr 1fr;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        /* Memastikan kontainer layout utama Astro melebar di desktop */
+        :global(.container) {
+            max-width: 1200px !important;
+            width: 90vw !important;
+        }
+    }
+
+    .form-section,
+    .preview-section {
+        width: 100%;
+        min-width: 0; /* Menghindari isu flex/grid item overflow bawaan browser */
+        box-sizing: border-box;
+    }
+
+    .form-group {
+        margin-bottom: 1.25rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .mt-2 {
+        margin-top: 0.5rem;
+    }
+    .font-bold {
+        font-weight: 600;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        box-sizing: border-box; /* Memastikan padding tidak menambah lebar elemen */
+        font-size: 0.95rem;
+        background-color: #fff;
+    }
+
+    input[type="text"]:focus,
+    select:focus {
+        outline: none;
+        border-color: var(--primary);
+    }
+
+    .error-msg {
+        color: #dc2626;
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        display: block;
+    }
+
+    .checkbox-group,
+    .security-box {
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f3f4f6;
+        border-radius: 8px;
+        box-sizing: border-box;
+        width: 100%;
+    }
+
+    .hidden-fields {
+        display: none;
+        margin-top: 1rem;
+        border-top: 1px solid #d1d5db;
+        padding-top: 1rem;
+    }
+
+    .checkbox-label {
+        display: flex;
+        align-items: flex-start; /* Menggunakan flex-start agar teks panjang di mobile rapi */
+        gap: 0.5rem;
+        font-weight: normal;
+        cursor: pointer;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .checkbox-label input[type="checkbox"] {
+        margin-top: 0.2rem; /* Menyelaraskan checkbox dengan baris pertama teks panjang */
+        flex-shrink: 0; /* Mencegah checkbox mengecil di layar mobile */
+    }
+
+    button {
+        width: 100%;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.75rem;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+
+    button:hover {
+        background-color: var(--primary-hover);
+    }
+
+    /* Preview Section Responsive Customization */
+    .preview-section {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    pre {
+        background: #1e1e24;
+        color: #a8ffb2;
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: "Courier New", Courier, monospace;
+        font-size: 0.85rem;
+        box-sizing: border-box;
+        width: 100%;
+        max-height: 450px;
+        margin: 0;
+    }
 </style>
 
-
 <script>
-	// DOM Elements
-	const form = document.getElementById('dnsForm') as HTMLFormElement;
-	const domainInput = document.getElementById('domain') as HTMLInputElement;
-	const ipv4Input = document.getElementById('ipv4') as HTMLInputElement;
-	const ipv6Input = document.getElementById('ipv6') as HTMLInputElement;
-	const mailTypeSelect = document.getElementById('mailType') as HTMLSelectElement;
-	const proxyCheck = document.getElementById('proxyDefault') as HTMLInputElement;
-	
-	const enableSecurityCheck = document.getElementById('enableSecurity') as HTMLInputElement;
-	const securityFields = document.getElementById('securityFields') as HTMLDivElement;
-	const dkimSelectorInput = document.getElementById('dkimSelector') as HTMLInputElement;
-	const dkimValueInput = document.getElementById('dkimValue') as HTMLInputElement;
-	const enableDmarcCheck = document.getElementById('enableDmarc') as HTMLInputElement;
-	
-	const livePreview = document.getElementById('livePreview') as HTMLElement;
-	const domainError = document.getElementById('domainError') as HTMLElement;
-	const ipv4Error = document.getElementById('ipv4Error') as HTMLElement;
+    // DOM Elements
+    const form = document.getElementById("dnsForm") as HTMLFormElement;
+    const domainInput = document.getElementById("domain") as HTMLInputElement;
+    const ipv4Input = document.getElementById("ipv4") as HTMLInputElement;
+    const ipv6Input = document.getElementById("ipv6") as HTMLInputElement;
+    const mailTypeSelect = document.getElementById(
+        "mailType",
+    ) as HTMLSelectElement;
+    const proxyCheck = document.getElementById(
+        "proxyDefault",
+    ) as HTMLInputElement;
 
-	// Toggle Security Fields Visibility
-	enableSecurityCheck?.addEventListener('change', () => {
-		if (securityFields) {
-			securityFields.style.display = enableSecurityCheck.checked ? 'block' : 'none';
-		}
-		updatePreview();
-	});
+    const enableSecurityCheck = document.getElementById(
+        "enableSecurity",
+    ) as HTMLInputElement;
+    const securityFields = document.getElementById(
+        "securityFields",
+    ) as HTMLDivElement;
+    const dkimSelectorInput = document.getElementById(
+        "dkimSelector",
+    ) as HTMLInputElement;
+    const dkimValueInput = document.getElementById(
+        "dkimValue",
+    ) as HTMLInputElement;
+    const enableDmarcCheck = document.getElementById(
+        "enableDmarc",
+    ) as HTMLInputElement;
 
-	// Regex Validators
-	const ipv4Regex = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
+    const livePreview = document.getElementById("livePreview") as HTMLElement;
+    const domainError = document.getElementById("domainError") as HTMLElement;
+    const ipv4Error = document.getElementById("ipv4Error") as HTMLElement;
 
-	function cleanDomain(val: string): string {
-		return val.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0].trim().toLowerCase();
-	}
+    // Toggle Security Fields Visibility
+    enableSecurityCheck?.addEventListener("change", () => {
+        if (securityFields) {
+            securityFields.style.display = enableSecurityCheck.checked
+                ? "block"
+                : "none";
+        }
+        updatePreview();
+    });
 
-	function generateZoneContent(): string {
-		let domain = cleanDomain(domainInput?.value || '');
-		if (!domain) domain = 'contoh.com';
-		
-		const ipv4 = ipv4Input?.value.trim() || '192.0.2.1';
-		const ipv6 = ipv6Input?.value.trim() || '';
-		const isProxied = proxyCheck?.checked ?? true;
-		const mailType = mailTypeSelect?.value || 'none';
-		
-		const proxyTag = isProxied ? ';cf_proxy=true' : ';cf_proxy=false';
+    // Regex Validators
+    const ipv4Regex = /^((25[0-5]|(2[0-4]|1\d|[1-9]|)\d)\.?\b){4}$/;
 
-		// 1. Header
-		let text = `; Zone file generated locally for Cloudflare Import\n`;
-		text += `$ORIGIN ${domain}.\n`;
-		text += `$TTL 3600\n\n`;
+    function cleanDomain(val: string): string {
+        return val
+            .replace(/^(https?:\/\/)?(www\.)?/, "")
+            .split("/")[0]
+            .trim()
+            .toLowerCase();
+    }
 
-		// 2. Core Web Records (A & AAAA)
-		text += `; --- Core Web Records ---\n`;
-		text += `@   IN  A     ${ipv4} ${proxyTag}\n`;
-		text += `www IN  A     ${ipv4} ${proxyTag}\n`;
-		if (ipv6) {
-			text += `@   IN  AAAA  ${ipv6} ${proxyTag}\n`;
-			text += `www IN  AAAA  ${ipv6} ${proxyTag}\n`;
-		}
-		text += `\n`;
+    function generateZoneContent(): string {
+        let domain = cleanDomain(domainInput?.value || "");
+        if (!domain) domain = "contoh.com";
 
-		// 3. System Records
-		text += `; --- System Records (DNS Only) ---\n`;
-		text += `ssh IN  A     ${ipv4} ;cf_proxy=false\n`;
-		text += `ftp IN  A     ${ipv4} ;cf_proxy=false\n\n`;
+        // Pastikan domain diakhiri dengan titik jika belum ada untuk format BIND
+        const domainWithDot = domain.endsWith(".") ? domain : `${domain}.`;
 
-		// 4. Mail Suite Templates
-		if (mailType === 'local') {
-			text += `; --- Local Mail Configuration ---\n`;
-			text += `@   IN  MX    10 mail.${domain}.\n`;
-			text += `mail IN A     ${ipv4} ;cf_proxy=false\n`;
-			text += `@   IN  TXT   "v=spf1 ip4:${ipv4} ~all"\n\n`;
-		} else if (mailType === 'google') {
-			text += `; --- Google Workspace Mail Configuration ---\n`;
-			text += `@   IN  MX    1   ASPMX.L.GOOGLE.COM.\n`;
-			text += `@   IN  MX    5   ALT1.ASPMX.L.GOOGLE.COM.\n`;
-			text += `@   IN  MX    5   ALT2.ASPMX.L.GOOGLE.COM.\n`;
-			text += `@   IN  MX    10  ALT3.ASPMX.L.GOOGLE.COM.\n`;
-			text += `@   IN  MX    10  ALT4.ASPMX.L.GOOGLE.COM.\n`;
-			text += `@   IN  TXT   "v=spf1 include:_spf.google.com ~all"\n\n`;
-		} else if (mailType === 'm365') {
-			text += `; --- Microsoft 365 Mail Configuration ---\n`;
-			const domainDash = domain.replace(/\./g, '-');
-			text += `@   IN  MX    0   ${domainDash}.mail.protection.outlook.com.\n`;
-			text += `autodiscover IN CNAME autodiscover.outlook.com. ;cf_proxy=false\n`;
-			text += `@   IN  TXT   "v=spf1 include:spf.protection.outlook.com ~all"\n\n`;
-		} else if (mailType === 'mailgun') {
-			text += `; --- Mailgun Transactional Mail Configuration ---\n`;
-			text += `mg  IN  MX    10  mxa.mailgun.org.\n`;
-			text += `mg  IN  MX    10  mxb.mailgun.org.\n`;
-			text += `mg  IN  TXT   "v=spf1 include:mailgun.org ~all"\n\n`;
-		}
+        const ipv4 = ipv4Input?.value.trim() || "192.0.2.1";
+        const ipv6 = ipv6Input?.value.trim() || "";
+        const isProxied = proxyCheck?.checked ?? true;
+        const mailType = mailTypeSelect?.value || "none";
 
-		// 5. Advanced Security (DKIM & DMARC)
-		if (enableSecurityCheck?.checked) {
-			text += `; --- Advanced Email Security ---\n`;
-			const selector = dkimSelectorInput?.value.trim() || 'default';
-			const dkimVal = dkimValueInput?.value.trim() || 'v=DKIM1; k=rsa; p=';
-			
-			text += `${selector}._domainkey IN TXT "${dkimVal}"\n`;
-			
-			if (enableDmarcCheck?.checked) {
-				text += `_dmarc IN TXT "v=DMARC1; p=none; rua=mailto:dmarc-reports@${domain}"\n`;
-			}
-		}
+        // Sesuaikan dengan format tag asli Cloudflare
+        const proxyTag = isProxied
+            ? "; cf_tags=cf-proxied:true"
+            : "; cf_tags=cf-proxied:false";
+        const dnsOnlyTag = "; cf_tags=cf-proxied:false";
+        const ttlWeb = isProxied ? "1" : "3600"; // TTL 1 berarti 'Automatic' di Cloudflare jika di-proxy
 
-		return text;
-	}
+        // Mengambil waktu export saat ini secara real-time
+        const now = new Date();
+        const formattedDate = now
+            .toISOString()
+            .replace("T", " ")
+            .substring(0, 19);
 
-	function updatePreview() {
-		if (livePreview) {
-			livePreview.textContent = generateZoneContent();
-		}
-	}
+        // 1. Header & Metadata mirip persis dengan ekspor asli
+        let text = `;; \n`;
+        text += `;; Domain:     ${domainWithDot}\n`;
+        text += `;; Exported:   ${formattedDate}\n`;
+        text += `;;\n;;\n`;
+        text += `;; Use at your own risk.\n\n`;
 
-	// Real-time Input Listeners untuk Live Preview
-	[domainInput, ipv4Input, ipv6Input, mailTypeSelect, proxyCheck, dkimSelectorInput, dkimValueInput, enableDmarcCheck].forEach(element => {
-		element?.addEventListener('input', updatePreview);
-		element?.addEventListener('change', updatePreview);
-	});
+        // 2. A Records & AAAA Records
+        text += `;; A Records\n`;
+        text += `${domainWithDot}\t${ttlWeb}\tIN\tA\t${ipv4} ${proxyTag}\n`;
+        if (ipv6) {
+            text += `\n;; AAAA Records\n`;
+            text += `${domainWithDot}\t${ttlWeb}\tIN\tAAAA\t${ipv6} ${proxyTag}\n`;
+        }
+        text += `\n`;
 
-	// Form Submission Handler + Validation
-	form?.addEventListener('submit', (e) => {
-		e.preventDefault();
-		
-		let hasError = false;
-		const domainVal = cleanDomain(domainInput.value);
-		const ipv4Val = ipv4Input.value.trim();
+        // 3. CNAME Records (Menggunakan CNAME yang mengarah ke root domain seperti contohmu)
+        text += `;; CNAME Records\n`;
+        text += `www.${domainWithDot}\t1\tIN\tCNAME\t${domainWithDot} ${proxyTag}\n`;
+        text += `ftp.${domainWithDot}\t1\tIN\tCNAME\t${domainWithDot} ${proxyTag}\n`;
 
-		// Validasi IPv4
-		if (!ipv4Regex.test(ipv4Val)) {
-			if (ipv4Error) ipv4Error.textContent = 'Format IPv4 address tidak valid.';
-			hasError = true;
-		} else {
-			if (ipv4Error) ipv4Error.textContent = '';
-		}
+        if (mailType === "local") {
+            text += `mail.${domainWithDot}\t1\tIN\tCNAME\t${domainWithDot} ${proxyTag}\n`;
+        }
+        text += `\n`;
 
-		if (hasError) return;
+        // 4. System Records tambahan (DNS Only untuk remote access)
+        text += `;; System Records (DNS Only)\n`;
+        text += `ssh.${domainWithDot}\t3600\tIN\tA\t${ipv4} ${dnsOnlyTag}\n\n`;
 
-		// Trigger Local Download
-		const blob = new Blob([generateZoneContent()], { type: 'text/plain;charset=utf-8' });
-		const url = URL.createObjectURL(blob);
-		const link = document.createElement('a');
-		link.href = url;
-		link.download = `${domainVal}-cloudflare-dns.txt`;
-		document.body.appendChild(link);
-		link.click();
-		document.body.removeChild(link);
-		URL.revokeObjectURL(url);
-	});
+        // 5. MX Records & TXT Records berdasarkan pilihan Email Suite
+        if (mailType === "local") {
+            text += `;; MX Records\n`;
+            text += `${domainWithDot}\t1\tIN\tMX\t0 mail.${domainWithDot}\n\n`;
 
-	// Jalankan preview inisial saat load pertama
-	updatePreview();
+            text += `;; TXT Records\n`;
+            text += `${domainWithDot}\t3600\tIN\tTXT\t"v=spf1 ip4:${ipv4} ~all"\n\n`;
+        } else if (mailType === "google") {
+            text += `;; MX Records\n`;
+            text += `${domainWithDot}\t1\tIN\tMX\t1 ASPMX.L.GOOGLE.COM.\n`;
+            text += `${domainWithDot}\t1\tIN\tMX\t5 ALT1.ASPMX.L.GOOGLE.COM.\n`;
+            text += `${domainWithDot}\t1\tIN\tMX\t5 ALT2.ASPMX.L.GOOGLE.COM.\n`;
+            text += `${domainWithDot}\t1\tIN\tMX\t10 ALT3.ASPMX.L.GOOGLE.COM.\n`;
+            text += `${domainWithDot}\t1\tIN\tMX\t10 ALT4.ASPMX.L.GOOGLE.COM.\n\n`;
+
+            text += `;; TXT Records\n`;
+            text += `${domainWithDot}\t3600\tIN\tTXT\t"v=spf1 include:_spf.google.com ~all"\n\n`;
+        } else if (mailType === "m365") {
+            const domainDash = domain.replace(/\./g, "-");
+            text += `;; MX Records\n`;
+            text += `${domainWithDot}\t1\tIN\tMX\t0 ${domainDash}.mail.protection.outlook.com.\n\n`;
+
+            text += `;; CNAME Records (Mail Extra)\n`;
+            text += `autodiscover.${domainWithDot}\t3600\tIN\tCNAME\tautodiscover.outlook.com. ${dnsOnlyTag}\n\n`;
+
+            text += `;; TXT Records\n`;
+            text += `${domainWithDot}\t3600\tIN\tTXT\t"v=spf1 include:spf.protection.outlook.com ~all"\n\n`;
+        } else if (mailType === "mailgun") {
+            text += `;; MX Records\n`;
+            text += `mg.${domainWithDot}\t1\tIN\tMX\t10 mxa.mailgun.org.\n`;
+            text += `mg.${domainWithDot}\t1\tIN\tMX\t10 mxb.mailgun.org.\n\n`;
+
+            text += `;; TXT Records\n`;
+            text += `mg.${domainWithDot}\t3600\tIN\tTXT\t"v=spf1 include:mailgun.org ~all"\n\n`;
+        }
+
+        // 6. Advanced Security (DKIM & DMARC) jika diaktifkan
+        if (enableSecurityCheck?.checked) {
+            const selector = dkimSelectorInput?.value.trim() || "default";
+            const dkimVal =
+                dkimValueInput?.value.trim() || "v=DKIM1; k=rsa; p=";
+
+            // Memastikan teks TXT record keamanan masuk ke kelompok TXT Records
+            text += `;; Advanced Security TXT Records\n`;
+            text += `${selector}._domainkey.${domainWithDot}\t3600\tIN\tTXT\t"${dkimVal}"\n`;
+
+            if (enableDmarcCheck?.checked) {
+                text += `_dmarc.${domainWithDot}\t3600\tIN\tTXT\t"v=DMARC1; p=none; rua=mailto:dmarc-reports@${domain}"\n`;
+            }
+            text += `\n`;
+        }
+
+        return text;
+    }
+
+    function updatePreview() {
+        if (livePreview) {
+            livePreview.textContent = generateZoneContent();
+        }
+    }
+
+    // Real-time Input Listeners untuk Live Preview
+    [
+        domainInput,
+        ipv4Input,
+        ipv6Input,
+        mailTypeSelect,
+        proxyCheck,
+        dkimSelectorInput,
+        dkimValueInput,
+        enableDmarcCheck,
+    ].forEach((element) => {
+        element?.addEventListener("input", updatePreview);
+        element?.addEventListener("change", updatePreview);
+    });
+
+    // Form Submission Handler + Validation
+    form?.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        let hasError = false;
+        const domainVal = cleanDomain(domainInput.value);
+        const ipv4Val = ipv4Input.value.trim();
+
+        // Validasi IPv4
+        if (!ipv4Regex.test(ipv4Val)) {
+            if (ipv4Error)
+                ipv4Error.textContent = "Format IPv4 address tidak valid.";
+            hasError = true;
+        } else {
+            if (ipv4Error) ipv4Error.textContent = "";
+        }
+
+        if (hasError) return;
+
+        // Trigger Local Download
+        const blob = new Blob([generateZoneContent()], {
+            type: "text/plain;charset=utf-8",
+        });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${domainVal}-cloudflare-dns.txt`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    });
+
+    // Jalankan preview inisial saat load pertama
+    updatePreview();
 </script>
